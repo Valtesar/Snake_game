@@ -19,19 +19,31 @@ class Snake():
         self.rect.centerx = self.background_rect.centerx
         self.rect.bottom = self.background_rect.bottom
 
-    def auto_move(self):
+    def move(self, direction='right'):
         """Метод движение змейки"""
-        self.rect.x += 1
-        if self.rect.left > 800:
+
+        if direction == 'up':
+            self.rect.y -= 10
+        elif direction == 'down':
+            self.rect.y += 10
+        elif direction == 'right':
+            self.rect.x += 10
+        elif direction == 'left':
+            self.rect.x -= 10
+
+        if self.rect.left > 700:
             self.rect.right = 0
+        # elif self.rect.right > 800:
+        #      self.rect.left = 0
 
     def end_move(self):
         """Метод окончания игры"""
         pass
 
-    def turn(self, direction):
+    def turn(self, angle):
         """Метод поворота змейки"""
-        self.image = pygame.transform.rotate(self.image, direction)
+
+        self.image = pygame.transform.rotate(self.image, angle)
 
     def get_food(self):
         """Метод поглощения еды"""

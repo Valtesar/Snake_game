@@ -13,12 +13,19 @@ def events(snake):
             if event.key == pygame.K_UP:
                 up = 90
                 snake.turn(up)
+                snake.move('up')
             elif event.key == pygame.K_DOWN:
-                image = pygame.transform.rotate(snake.image, 180)
+                down = -90
+                snake.turn('down', down)
+                snake.move('down')
             elif event.key == pygame.K_RIGHT:
-                image = pygame.transform.rotate(snake.image, 180)
+                right = 90
+                snake.turn('right', right)
+                snake.move('right')
             elif event.key == pygame.K_LEFT:
-                image = pygame.transform.rotate(snake.image, 180)
+                left = 90
+                snake.turn('left', left)
+                snake.move('left')
 
 
 def turn(snake_look):
