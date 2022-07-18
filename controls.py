@@ -3,7 +3,7 @@ import sys
 
 
 def events(snake):
-    """обработка событий"""
+    """Обработка нажатий пользователем клавиш управления и выхода из игры"""
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -11,8 +11,8 @@ def events(snake):
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                image = pygame.transform.rotate(snake.image, 180)
-                snake.output_snake(image)
+                up = 90
+                snake.turn(up)
             elif event.key == pygame.K_DOWN:
                 image = pygame.transform.rotate(snake.image, 180)
             elif event.key == pygame.K_RIGHT:
