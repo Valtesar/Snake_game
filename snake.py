@@ -1,5 +1,6 @@
 import pygame
 import time
+from settings import *
 
 
 class Snake:
@@ -15,13 +16,13 @@ class Snake:
         self.background = background
         self.image_head = pygame.image.load('images/snake_head.png')
         self.rect = self.image_head.get_rect()
-        self.background_rect = background.get_rect()
-        self.rect.centerx = self.background_rect.centerx
-        self.rect.bottom = self.background_rect.bottom
-        self.rect.x = 300
-        self.rect.y = 300
+        self.rect.x = display_width / 2
+        self.rect.y = display_height / 2
         self.x_change = 0
         self.y_change = 0
+        self.length_snake = 1
+        self.list_snake = []
+
 
     def update(self):
         """Метод движение змейки"""
