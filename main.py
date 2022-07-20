@@ -16,8 +16,8 @@ def run():
 
         controls.events(snake)
         screen.fill(bg_colour)
-        snake.output_snake()
         food.output_food()
+        snake.output_snake()
         pygame.display.flip()
 
 

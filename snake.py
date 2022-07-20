@@ -1,5 +1,6 @@
 import pygame
 import controls
+import time
 
 
 class Snake():
@@ -22,19 +23,24 @@ class Snake():
     def move(self, direction='right'):
         """Метод движение змейки"""
 
+        # Snake.turn(self, angle=90)  # Если вызывается метод смены направления, то вызыввает метод поворота спрайта
+
         if direction == 'up':
-            self.rect.y -= 10
+            self.rect.y -= 20
         elif direction == 'down':
-            self.rect.y += 10
+            self.rect.y += 20
         elif direction == 'right':
-            self.rect.x += 10
+            self.rect.x += 20
         elif direction == 'left':
-            self.rect.x -= 10
+            self.rect.x -= 20
+
+        """"обработка границ экрана движения змейки"""
 
         if self.rect.left > 700:
             self.rect.right = 0
-        # elif self.rect.right > 800:
-        #      self.rect.left = 0
+        elif self.rect.right < 0:
+            self.rect.left = 700
+
 
     def end_move(self):
         """Метод окончания игры"""
