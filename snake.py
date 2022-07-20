@@ -41,6 +41,10 @@ class Snake():
         elif self.rect.right < 0:
             self.rect.left = 700
 
+        if self.rect.bottom < 0:
+            self.rect.top = 800
+        elif self.rect.top > 800:
+            self.rect.bottom = 0
 
     def end_move(self):
         """Метод окончания игры"""
