@@ -11,13 +11,17 @@ def events(snake):
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                snake.move('up')
+                snake.y_change -= 10
+                snake.x_change = 0
             elif event.key == pygame.K_DOWN:
-                snake.move('down')
+                snake.y_change = 10
+                snake.x_change = 0
             elif event.key == pygame.K_RIGHT:
-                snake.move('right')
+                snake.x_change = 10
+                snake.y_change = 0
             elif event.key == pygame.K_LEFT:
-                snake.move('left')
+                snake.x_change -= 10
+                snake.y_change = 0
 
 
 def turn(snake_look):
