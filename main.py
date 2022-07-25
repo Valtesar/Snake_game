@@ -67,6 +67,12 @@ def message(msg, color):
     dis.blit(text, [WIDTH / 6, HIGHT / 3])
 
 
+def generate_food():
+    x1_food = round(random.randrange(0, WIDTH - HIGHT) / 10.0) * 10.0
+    y1_food = round(random.randrange(0, HIGHT - SNAKE_BLOCK) / 10.0) * 10.0
+    return x1_food, y1_food
+
+
 def game_loop():
     """Основной игровой метод"""
 
@@ -74,7 +80,7 @@ def game_loop():
     game_over = False
     game_close = False
 
-    """Положение змейки на экране относительно координат <x1> <y1>"""
+    """Стартовое положение змейки на экране относительно координат <x1> <y1>"""
     x1 = WIDTH / 2
     y1 = HIGHT / 2
 
@@ -82,18 +88,22 @@ def game_loop():
     x1_change = 0
     y1_change = 0
 
-    """"""
+    """Создаем список координат тела змейки и значение стартовой длины змейки"""
     snake_list = []
     length_of_snake = 1
 
     """Отображение еды змейки на игровом поле используя метод рандом.
         Вычисляет случайное значение <x> и случайное значение <y>
         Округляет его до целого числа int"""
-    x1_food = round(random.randrange(0, WIDTH - HIGHT) / 10.0) * 10.0
-    y1_food = round(random.randrange(0, HIGHT - SNAKE_BLOCK) / 10.0) * 10.0
+    x1_food = generate_food()[0]
+    y1_food = generate_food()[1]
 
+    """Запускаем главный бесконечный цикл программы,
+       который работает до тех пор пока пользователь не закроет окно игры"""
     while not game_close:
 
+        """Запускаем вложенный бесконечный цикл програамы,
+           который работает до тех пор, пока пользователь не проиграет"""
         while game_over:
             dis.fill(BLUE)
             message("GAME OVER! Space - New game Esc - Quit", RED)
@@ -104,16 +114,24 @@ def game_loop():
                Нажатие клавишы ESC ведет в выходу из игры.
                Нажатие клавишы Space запускает игру заново"""
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.QUIT:
+                    game_close = True
+                elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         game_over = False
                         game_close = True
                     if event.key == pygame.K_SPACE:
                         game_loop()
 
+        """Отслеживаем игровые события.
+           Закрытие игрового окна закрывает приложение без ошибок.
+           Нажатие клавишы влево - движение змейки влево <<< X, Y
+           Нажатие клавишы вправо - движение змейки вправо X >>>, Y 
+           Нажатие клавишы вверх - движение змейки вверх X, Y /| 
+           Нажатие клавишы вниз - движение змейки вниз X, Y |/ """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                game_over = True
+                game_close = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     x1_change = -SNAKE_BLOCK
@@ -122,35 +140,46 @@ def game_loop():
                     x1_change = SNAKE_BLOCK
                     y1_change = 0
                 elif event.key == pygame.K_UP:
+                    x1_change = 0
                     y1_change = -SNAKE_BLOCK
-                    x1_change = 0
                 elif event.key == pygame.K_DOWN:
-                    y1_change = SNAKE_BLOCK
                     x1_change = 0
+                    y1_change = SNAKE_BLOCK
 
+        """Если змейка попытается выйти за границы игрового поля игра будет завершена проигрышем"""
         if x1 >= WIDTH or x1 < 0 or y1 >= HIGHT or y1 < 0:
             game_over = True
+
+        """Получаем текущие координаты змейки с учетом изменний от пользователя (движения)"""
         x1 += x1_change
         y1 += y1_change
         dis.fill(BLUE)
+
+        """Отрисовываем еду на экране по случайно сгенерированным координатам"""
         pygame.draw.rect(dis, GREEN, [x1_food, y1_food, SNAKE_BLOCK, SNAKE_BLOCK])
+
+        """"Создаем голову змейки и заносим её в основоной список тела змейки первым элементом.
+           Если длина списка тела змейки больше чем сама змейка, то удаляем первый элемент (голову)"""
         snake_head = [x1, y1]
         snake_list.append(snake_head)
         if len(snake_list) > length_of_snake:
             del snake_list[0]
 
-        for x in snake_list[:-1]:
-            if x == snake_head:
+        """Проверяем каждый элемент в теле змейки, 
+           и если его координаты равны координатам головы змейки то игра будет завершена проигрышем"""
+        for body in snake_list[:-1]:
+            if snake_head == body:
                 game_over = True
 
         our_snake(SNAKE_BLOCK, snake_list)
         your_score(length_of_snake - 1)
 
         pygame.display.update()
-
+        """Если змейка попадает головой на координаты еды, то генерируем новые координаты еды
+           и увеличиваем длинну змейки на 1 еденицу"""
         if x1 == x1_food and y1 == y1_food:
-            x1_food = round(random.randrange(0, WIDTH - SNAKE_BLOCK) / 10.0) * 10.0
-            y1_food = round(random.randrange(0, HIGHT - SNAKE_BLOCK) / 10.0) * 10.0
+            x1_food = generate_food()[0]
+            y1_food = generate_food()[1]
             length_of_snake += 1
 
         clock.tick(SNAKE_SPEED)
