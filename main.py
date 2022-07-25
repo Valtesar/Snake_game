@@ -40,6 +40,7 @@ score_font = pygame.font.SysFont("comicsansms", 20)
 
 snake_image = pygame.image.load('images/snake_block.png')
 food_image = pygame.image.load('images/food_block.png')
+background = pygame.image.load('images/background.png')
 
 
 def your_score(score):
@@ -52,22 +53,29 @@ def your_score(score):
     dis.blit(value, [0, 0])
 
 
-def our_snake(snake_block, snake_list):
+def output_snake(snake_block, snake_list):
+    """Метод отрисовки змейки на графическом экране.
+       Получает на вход параметры:
+            snake_block -> размер блока тела змейки в пикселях
+            snake_list -> список координат всех имеющихся блоков тела змейки"""
     for x in snake_list:
-        pygame.draw.rect(dis, BLACK, [x[0], x[1], snake_block, snake_block])
+        dis.blit(snake_image, [x[0], x[1], snake_block, snake_block])
 
 
 def message(msg, color):
     """Метод вывода сообщений на экран пользователя"""
 
-    """Принимает в себя аргуемент msg - текст сообщения и color - цвет текста сообщения"""
-    """Отрисовывает на экране текст ровно по центру"""
-
+    """Принимает в себя аргуементы:
+            msg -> текст сообщения
+            color -> цвет текста сообщения"""
+    """Отрисовывает на экране текст ровно по центру в зависимости от ширины и высоты игрового поля"""
     text = font_style.render(msg, True, color)
-    dis.blit(text, [WIDTH / 6, HIGHT / 3])
+    dis.blit(text, [WIDTH / 15, HIGHT / 3])
 
 
 def generate_food():
+    """Метод генерации случайных координат <x1> <y1> для еды змейки"""
+
     x1_food = round(random.randrange(0, WIDTH - HIGHT) / 10.0) * 10.0
     y1_food = round(random.randrange(0, HIGHT - SNAKE_BLOCK) / 10.0) * 10.0
     return x1_food, y1_food
@@ -105,8 +113,8 @@ def game_loop():
         """Запускаем вложенный бесконечный цикл програамы,
            который работает до тех пор, пока пользователь не проиграет"""
         while game_over:
-            dis.fill(BLUE)
-            message("GAME OVER! Space - New game Esc - Quit", RED)
+            dis.fill(BLACK)
+            message("*** GAME OVER! *** *** Space - New game ***  *** Esc - Quit ***", RED)
             your_score(length_of_snake - 1)
             pygame.display.update()
 
@@ -153,10 +161,10 @@ def game_loop():
         """Получаем текущие координаты змейки с учетом изменний от пользователя (движения)"""
         x1 += x1_change
         y1 += y1_change
-        dis.fill(BLUE)
+        dis.blit(background, [0, 0])
 
         """Отрисовываем еду на экране по случайно сгенерированным координатам"""
-        pygame.draw.rect(dis, GREEN, [x1_food, y1_food, SNAKE_BLOCK, SNAKE_BLOCK])
+        dis.blit(food_image, [x1_food, y1_food])
 
         """"Создаем голову змейки и заносим её в основоной список тела змейки первым элементом.
            Если длина списка тела змейки больше чем сама змейка, то удаляем первый элемент (голову)"""
@@ -171,7 +179,7 @@ def game_loop():
             if snake_head == body:
                 game_over = True
 
-        our_snake(SNAKE_BLOCK, snake_list)
+        output_snake(SNAKE_BLOCK, snake_list)
         your_score(length_of_snake - 1)
 
         pygame.display.update()
