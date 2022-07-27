@@ -37,23 +37,29 @@ SNAKE_SPEED = 15  # Скорость передвижения змейки
 
 font_style = pygame.font.SysFont("bahnschrift", 25)
 score_font = pygame.font.SysFont("comicsansms", 20)
+result_score_font = pygame.font.SysFont("comicsansms", 35, bold=True)
 
 """Инициализация спрайтов"""
-snake_image = pygame.image.load('images/snake_block.png')
-food_image = pygame.image.load('images/food_block.png')
-background = pygame.image.load('images/background.png')
+snake_img = pygame.image.load('images/snake_block.png')
+food_img = pygame.image.load('images/food_block.png')
+background_img = pygame.image.load('images/background.png')
+game_over_img = pygame.image.load('images/game_over.png')
+game_over_record_img = pygame.image.load('images/game_over_record.png')
 
 event_log = ['']
 
 
-def your_score(score):
+def output_score(score, endgame):
     """Метод вывода набранных очков в игре"""
 
     """Принимает в себя аргумент score - колличество очков"""
     """Отрисовывает на экране значение очков в положении [0, 0]"""
-
-    value = score_font.render("Score: " + str(score), True, YELLOW)
-    dis.blit(value, [0, 0])
+    if not endgame:
+        value = score_font.render("Score: " + str(score), True, YELLOW)
+        dis.blit(value, [0, 0])
+    elif endgame:
+        value = result_score_font.render(str(score), True, BLACK)
+        dis.blit(value, [310, 115])
 
 
 def output_snake(snake_block, snake_list):
@@ -62,7 +68,7 @@ def output_snake(snake_block, snake_list):
             snake_block -> размер блока тела змейки в пикселях
             snake_list -> список координат всех имеющихся блоков тела змейки"""
     for x in snake_list:
-        dis.blit(snake_image, [x[0], x[1], snake_block, snake_block])
+        dis.blit(snake_img, [x[0], x[1], snake_block, snake_block])
 
 
 def message(msg, color):
@@ -79,8 +85,8 @@ def message(msg, color):
 def generate_food():
     """Метод генерации случайных координат <x1> <y1> для еды змейки"""
 
-    x1_food = random.randrange(0, WIDTH - HIGHT, 10)
-    y1_food = random.randrange(0, HIGHT - SNAKE_BLOCK, 10)
+    x1_food = random.randrange(0, WIDTH, 10)
+    y1_food = random.randrange(0, HIGHT, 10)
     return x1_food, y1_food
 
 
@@ -116,9 +122,8 @@ def game_loop():
         """Запускаем вложенный бесконечный цикл програамы,
            который работает до тех пор, пока пользователь не проиграет"""
         while game_over:
-            dis.fill(BLACK)
-            message("*** GAME OVER! *** *** Space - New game ***  *** Esc - Quit ***", RED)
-            your_score(length_of_snake - 1)
+            dis.blit(game_over_img, [0, 0])
+            output_score(length_of_snake - 1, True)
             pygame.display.update()
 
             """Отслеживаем игровые события. 
@@ -188,10 +193,10 @@ def game_loop():
         """Получаем текущие координаты змейки с учетом изменний от пользователя (движения)"""
         x1 += x1_change
         y1 += y1_change
-        dis.blit(background, [0, 0])
+        dis.blit(background_img, [0, 0])
 
         """Отрисовываем еду на экране по случайно сгенерированным координатам"""
-        dis.blit(food_image, [x1_food, y1_food])
+        dis.blit(food_img, [x1_food, y1_food])
 
         """"Создаем голову змейки и заносим её в основоной список тела змейки первым элементом.
            Если длина списка тела змейки больше чем сама змейка, то удаляем первый элемент (голову)"""
@@ -207,7 +212,7 @@ def game_loop():
                 game_over = True
 
         output_snake(SNAKE_BLOCK, snake_list)
-        your_score(length_of_snake - 1)
+        output_score(length_of_snake - 1, False)
 
         pygame.display.update()
         """Если змейка попадает головой на координаты еды, то генерируем новые координаты еды
