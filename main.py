@@ -79,8 +79,8 @@ def message(msg, color):
 def generate_food():
     """Метод генерации случайных координат <x1> <y1> для еды змейки"""
 
-    x1_food = round(random.randrange(0, WIDTH - HIGHT) / 10.0) * 10.0
-    y1_food = round(random.randrange(0, HIGHT - SNAKE_BLOCK) / 10.0) * 10.0
+    x1_food = random.randrange(0, WIDTH - HIGHT, 10)
+    y1_food = random.randrange(0, HIGHT - SNAKE_BLOCK, 10)
     return x1_food, y1_food
 
 
