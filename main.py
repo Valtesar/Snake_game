@@ -38,9 +38,12 @@ SNAKE_SPEED = 15  # Скорость передвижения змейки
 font_style = pygame.font.SysFont("bahnschrift", 25)
 score_font = pygame.font.SysFont("comicsansms", 20)
 
+"""Инициализация спрайтов"""
 snake_image = pygame.image.load('images/snake_block.png')
 food_image = pygame.image.load('images/food_block.png')
 background = pygame.image.load('images/background.png')
+
+event_log = ['']
 
 
 def your_score(score):
@@ -137,22 +140,46 @@ def game_loop():
            Нажатие клавишы вправо - движение змейки вправо X >>>, Y 
            Нажатие клавишы вверх - движение змейки вверх X, Y /| 
            Нажатие клавишы вниз - движение змейки вниз X, Y |/ """
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_close = True
             if event.type == pygame.KEYDOWN:
+                """Обработка события нажатия клавишы влево"""
                 if event.key == pygame.K_LEFT:
-                    x1_change = -SNAKE_BLOCK
-                    y1_change = 0
+                    snake_direction = 'left'
+                    if not event_log.__contains__('right'):
+                        x1_change = -SNAKE_BLOCK
+                        y1_change = 0
+                        event_log.append(snake_direction)
+                        event_log.pop(0)
+
                 elif event.key == pygame.K_RIGHT:
-                    x1_change = SNAKE_BLOCK
-                    y1_change = 0
+                    """Обработка события нажатия клавишы вправо"""
+                    snake_direction = 'right'
+                    if not event_log.__contains__('left'):
+                        x1_change = SNAKE_BLOCK
+                        y1_change = 0
+                        event_log.append(snake_direction)
+                        event_log.pop(0)
+
                 elif event.key == pygame.K_UP:
-                    x1_change = 0
-                    y1_change = -SNAKE_BLOCK
+                    """Обработка события нажатия клавишы вверх"""
+                    snake_direction = 'up'
+                    if not event_log.__contains__('down'):
+                        x1_change = 0
+                        y1_change = -SNAKE_BLOCK
+                        event_log.append(snake_direction)
+                        event_log.pop(0)
+
                 elif event.key == pygame.K_DOWN:
-                    x1_change = 0
-                    y1_change = SNAKE_BLOCK
+                    """Обработка события нажатия клавишы вниз"""
+                    snake_direction = 'down'
+                    if not event_log.__contains__('up'):
+                        x1_change = 0
+                        y1_change = SNAKE_BLOCK
+                        event_log.append(snake_direction)
+                        event_log.pop(0)
 
         """Если змейка попытается выйти за границы игрового поля игра будет завершена проигрышем"""
         if x1 >= WIDTH or x1 < 0 or y1 >= HIGHT or y1 < 0:
