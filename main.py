@@ -1,6 +1,7 @@
 import pygame
 import time
 import random
+from os import path
 """Оконное приложение написанное на языке Python 3.8.2 с использованием фреймворка pygame 2.1.2"""
 
 """Приложение созданно по прототипу игры змейка.
@@ -49,17 +50,25 @@ game_over_record_img = pygame.image.load('images/game_over_record.png')
 event_log = ['']
 
 
-def output_score(score, endgame):
+def output_score(score, endgame, high_score):
     """Метод вывода набранных очков в игре"""
 
-    """Принимает в себя аргумент score - колличество очков"""
-    """Отрисовывает на экране значение очков в положении [0, 0]"""
+    """Принимает в себя аргументы:
+     <score> - текущее колличество очков
+     <endgame> - закончилась ли игра (True - Да, False - Нет)
+     <high_score> - максимальное колличество очков игрока
+     Отрисовывает на экране текущее значение очков и максимальное"""
+
     if not endgame:
-        value = score_font.render("Score: " + str(score), True, YELLOW)
-        dis.blit(value, [0, 0])
+        current_score = score_font.render('Score: ' + str(score), True, YELLOW)
+        high_score = score_font.render('Record: ' + str(high_score), True, YELLOW)
+        dis.blit(high_score, [490, 0])
+        dis.blit(current_score, [0, 0])
     elif endgame:
-        value = result_score_font.render(str(score), True, BLACK)
-        dis.blit(value, [310, 115])
+        current_score = result_score_font.render(str(score), True, BLACK)
+        high_score = result_score_font.render(str(high_score), True, BLACK)
+        dis.blit(high_score, [310, 220])
+        dis.blit(current_score, [310, 115])
 
 
 def output_snake(snake_block, snake_list):
@@ -115,6 +124,12 @@ def game_loop():
     x1_food = generate_food()[0]
     y1_food = generate_food()[1]
 
+    if not path.exists('high_score.txt'):
+        with open('high_score.txt', 'w') as w:
+            w.write('0')
+    with open('high_score.txt', 'r') as s:
+        high_score = s.read()
+
     """Запускаем главный бесконечный цикл программы,
        который работает до тех пор пока пользователь не закроет окно игры"""
     while not game_close:
@@ -123,8 +138,11 @@ def game_loop():
            который работает до тех пор, пока пользователь не проиграет"""
         while game_over:
             dis.blit(game_over_img, [0, 0])
-            output_score(length_of_snake - 1, True)
+            output_score(length_of_snake - 1, True, high_score)
             pygame.display.update()
+
+            with open('high_score.txt', 'w') as scores:
+                scores.write(str(high_score))
 
             """Отслеживаем игровые события. 
                Нажатие клавишы ESC ведет в выходу из игры.
@@ -211,10 +229,6 @@ def game_loop():
             if snake_head == body:
                 game_over = True
 
-        output_snake(SNAKE_BLOCK, snake_list)
-        output_score(length_of_snake - 1, False)
-
-        pygame.display.update()
         """Если змейка попадает головой на координаты еды, то генерируем новые координаты еды
            и увеличиваем длинну змейки на 1 еденицу"""
         if x1_snake == x1_food and y1_snake == y1_food:
@@ -222,10 +236,17 @@ def game_loop():
             y1_food = generate_food()[1]
             length_of_snake += 1
 
+        """Если длина змейки больше чем рекорд, то новое значение рекорда = длине змейки"""
+        if length_of_snake - 1 > int(high_score):
+            high_score = length_of_snake - 1
+
+        output_snake(SNAKE_BLOCK, snake_list)
+        output_score(length_of_snake - 1, False, high_score)
+        pygame.display.update()
         clock.tick(SNAKE_SPEED)
-
-    pygame.quit()
     quit()
+    pygame.quit()
 
 
-game_loop()
+if __name__ == '__main__':
+    game_loop()
