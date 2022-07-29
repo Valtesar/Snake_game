@@ -97,11 +97,11 @@ def game_loop():
     game_over = False
     game_close = False
 
-    """Стартовое положение змейки на экране относительно координат <x1> <y1>"""
-    x1 = WIDTH / 2
-    y1 = HIGHT / 2
+    """Стартовое положение змейки на экране относительно координат <x1_snake> <y1_snake>"""
+    x1_snake = WIDTH / 2
+    y1_snake = HIGHT / 2
 
-    """Изменяемые параметры <x1> <y1> в процессе игры"""
+    """Изменяемые параметры <x1_snake> <y1_snake> в процессе игры"""
     x1_change = 0
     y1_change = 0
 
@@ -187,12 +187,12 @@ def game_loop():
                         event_log.pop(0)
 
         """Если змейка попытается выйти за границы игрового поля игра будет завершена проигрышем"""
-        if x1 >= WIDTH or x1 < 0 or y1 >= HIGHT or y1 < 0:
+        if x1_snake >= WIDTH or x1_snake < 0 or y1_snake >= HIGHT or y1_snake < 0:
             game_over = True
 
         """Получаем текущие координаты змейки с учетом изменний от пользователя (движения)"""
-        x1 += x1_change
-        y1 += y1_change
+        x1_snake += x1_change
+        y1_snake += y1_change
         dis.blit(background_img, [0, 0])
 
         """Отрисовываем еду на экране по случайно сгенерированным координатам"""
@@ -200,7 +200,7 @@ def game_loop():
 
         """"Создаем голову змейки и заносим её в основоной список тела змейки первым элементом.
            Если длина списка тела змейки больше чем сама змейка, то удаляем первый элемент (голову)"""
-        snake_head = [x1, y1]
+        snake_head = [x1_snake, y1_snake]
         snake_list.append(snake_head)
         if len(snake_list) > length_of_snake:
             del snake_list[0]
@@ -217,7 +217,7 @@ def game_loop():
         pygame.display.update()
         """Если змейка попадает головой на координаты еды, то генерируем новые координаты еды
            и увеличиваем длинну змейки на 1 еденицу"""
-        if x1 == x1_food and y1 == y1_food:
+        if x1_snake == x1_food and y1_snake == y1_food:
             x1_food = generate_food()[0]
             y1_food = generate_food()[1]
             length_of_snake += 1
