@@ -1,7 +1,7 @@
 <h1 alighn ="center">A simple snake game from your childhood.</h1>
 This is a simple snake game on your personal computer.  Written using the <b>pygame</b> framework.  
 
-This repository is written using a single master branch. Further updates will be released in new branches and then uploaded to the master branch.
+This repository is written using a single master branch, because the development was conducted by one developer (don't hate me). Further updates will be released in new branches and then uploaded to the master branch.
 
 You can always <b>get the current version of the game in the master branch</b>.
 
