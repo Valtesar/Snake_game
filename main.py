@@ -87,10 +87,16 @@ def generate_food():
     return x1_food, y1_food
 
 
+def output_main_menu(high_score):
+    """Метод вывода значений на экран главного меню"""
+    high_score = result_score_font.render(str(high_score), True, BLACK)
+    dis.blit(high_score, [205, 335])
+
+
 def game_loop():
     """Основной игровой метод"""
 
-    """По умолчанию параметры конца игры и закрытия окна в положении 0"""
+    """По умолчанию параметры конца игры и закрытия окна в положении 0, а старта игры в 1"""
     game_over = False
     game_close = False
     game_start = True
@@ -112,6 +118,7 @@ def game_loop():
         Округляет его до целого числа int"""
     x1_food = generate_food()[0]
     y1_food = generate_food()[1]
+
     """Пытаемся прочитать файл high_sore.txt, если файл отсутствует,
        то создаем файл с таким именем и записываем туда значение <0>"""
     if not path.exists('high_score.txt'):
@@ -127,6 +134,7 @@ def game_loop():
            который работает до тех пор пока пользователь не нажмет ENTER или не закроет окно игры"""
         while game_start:
             dis.blit(main_menu_img, [0, 0])
+            output_main_menu(high_score)
             pg.display.update()
             for event in pg.event.get():
                 if event.type == pg.QUIT:
